@@ -4,6 +4,9 @@
 This image is used for "server-like" applications where you already have a
 serial conosole (over UART).**
 
+**Please refer to the releases section and make sure that your board firmware
+matches with what is expected.**
+
 Build your own `.img` file using the `create-image.sh` shell script. Otherwise, just
 `dd` the provided image like so:
 
