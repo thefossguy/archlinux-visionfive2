@@ -27,14 +27,10 @@ export UBOOT_PART=lfs/1uboot
 truncate -s 2700M "$IMAGE_NAME"
 
 # mount image to the loopback interface
-losetup -P loop0 "$IMAGE_NAME"
-if [ $? -ne 0 ]; then
-    echo "ERROR: something is mounted to interface \'/dev/loop0\'"
-    exit 1
-fi
+LOOP_DEV=$(losetup -f -P --show "${IMAGE_NAME}")
 
 # partition disk/image
-cat << EOF | fdisk /dev/loop0
+cat << EOF | fdisk $LOOP_DEV
 g
 n
 1
@@ -68,7 +64,7 @@ w
 EOF
 sync
 
-parted --script /dev/loop0 \
+parted --script $LOOP_DEV \
     set 3 boot on \
     set 3 esp on \
     set 4 legacy_boot on
@@ -76,14 +72,14 @@ sync
 
 
 # format partitions
-dd status=progress conv=sync if="$SPL_PART" of=/dev/loop0p1
-dd status=progress conv=sync if="$UBOOT_PART" of=/dev/loop0p2
-mkfs.fat -F32 /dev/loop0p3
-mkfs.ext4 -L archlinuxroot -F /dev/loop0p4
+dd status=progress conv=sync if="$SPL_PART" of=${LOOP_DEV}p1
+dd status=progress conv=sync if="$UBOOT_PART" of=${LOOP_DEV}p2
+mkfs.fat -F32 ${LOOP_DEV}p3
+mkfs.ext4 -L archlinuxroot -F ${LOOP_DEV}p4
 
 # mount partitions
-mount /dev/loop0p4 /mnt || exit 1
-mount --mkdir /dev/loop0p3 /mnt/boot || exit 1
+mount ${LOOP_DEV}p4 /mnt || exit 1
+mount --mkdir ${LOOP_DEV}p3 /mnt/boot || exit 1
 
 
 ################################################################################
@@ -96,7 +92,7 @@ bash scripts/install-packages.sh
 if [ $? -ne 0 ]; then
     sync
     umount -R /mnt
-    losetup -d /dev/loop0
+    losetup -d $LOOP_DEV
     rm $IMAGE_NAME
     exit 1
 fi
@@ -113,7 +109,7 @@ arch-chroot /mnt dash /chroot-data/kernel-installer.sh
 if [ $? -ne 0 ]; then
     sync
     umount -R /mnt
-    losetup -d /dev/loop0
+    losetup -d $LOOP_DEV
     rm $IMAGE_NAME
     exit 1
 fi
@@ -139,7 +135,7 @@ arch-chroot /mnt vim /etc/fstab
 
 sync
 umount -R /mnt
-losetup -d /dev/loop0
+losetup -d $LOOP_DEV
 
 
 # vim:set ts=4 sts=4 sw=4 et:
