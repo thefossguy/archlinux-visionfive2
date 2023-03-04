@@ -152,4 +152,8 @@ sync
 umount -R /mnt
 losetup -d $LOOP_DEV
 
+tput -x clear
+echo "Image created with name $IMAGE_NAME"
+echo "The image is owned by 'root:root', please chown it ;)"
+
 # vim:set ts=4 sts=4 sw=4 et:
