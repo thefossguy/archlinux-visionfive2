@@ -10,7 +10,8 @@ tput -x clear
 [ -f /chroot-scripts/mirrorlist ] && cp /chroot-scripts/mirrorlist \
 	/etc/pacman.d/mirrorlist
 
-# timezone
+# time
+hwclock --systohc # the VF2 has a hawdware clock; nice
 ln -sf /usr/share/zoneinfo/UTC /etc/localtime
 
 # locale
@@ -41,6 +42,7 @@ usermod --password $(echo starfive | openssl passwd -1 -stdin) root
 systemctl enable NetworkManager.service
 systemctl enable sshd.service
 systemctl enable dhcpcd.service
+systemctl enable systemd-timesyncd.service
 
 # doas setup
 cat <<EOF > /etc/doas.conf
