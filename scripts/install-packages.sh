@@ -14,5 +14,5 @@ PKGS_TO_INSTALL=(archlinux-keyring base base-devel bash bind btrfs-progs cron cu
 ################################################################################
 # install packages
 ################################################################################
-
-pacstrap -C extra/pacman.conf /mnt "${PKGS_TO_INSTALL[@]}"
+echo "Running sudo for pacstrap"
+sudo pacstrap -C extra/pacman.conf /mnt "${PKGS_TO_INSTALL[@]}" || exit 1

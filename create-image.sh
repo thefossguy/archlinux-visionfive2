@@ -1,5 +1,17 @@
 #!/usr/bin/env bash
 
+ARCHITECTURE=`uname -m`
+if [ $ARCHITECTURE != 'riscv64' ]; then
+    echo "ERROR: Must be run on a riscv64 machine"
+    exit 1
+fi
+
+CMD_ARCH_CHROOT=`command -v arch-chroot`
+if [ $? -ne 0 ]; then
+    echo "ERROR: arch-chroot command not found."
+    exit 1
+fi
+
 export IMAGE_NAME=archlinux-$(date +%Y.%m.%d)-riscv64.img
 export pkg_start="linux-starfive-visionfive2"
 export pkg_end="5.15.0.arch1-1-riscv64.pkg.tar.zst"
@@ -27,10 +39,11 @@ export UBOOT_PART=lfs/1uboot
 truncate -s 2700M "$IMAGE_NAME"
 
 # mount image to the loopback interface
-LOOP_DEV=$(losetup -f -P --show "${IMAGE_NAME}")
+echo "Running sudo to create loopback device..."
+LOOP_DEV=$(sudo losetup -f -P --show "${IMAGE_NAME}") || exit 1
 
 # partition disk/image
-cat << EOF | fdisk $LOOP_DEV
+cat << EOF | sudo fdisk $LOOP_DEV
 g
 n
 1
@@ -64,7 +77,7 @@ w
 EOF
 sync
 
-parted --script $LOOP_DEV \
+sudo parted --script $LOOP_DEV \
     set 3 boot on \
     set 3 esp on \
     set 4 legacy_boot on
@@ -72,14 +85,15 @@ sync
 
 
 # format partitions
-dd status=progress conv=sync if="$SPL_PART" of=${LOOP_DEV}p1
-dd status=progress conv=sync if="$UBOOT_PART" of=${LOOP_DEV}p2
-mkfs.fat -F32 ${LOOP_DEV}p3
-mkfs.ext4 -L archlinuxroot -F ${LOOP_DEV}p4
+sudo dd status=progress conv=sync if="$SPL_PART" of=${LOOP_DEV}p1
+sudo dd status=progress conv=sync if="$UBOOT_PART" of=${LOOP_DEV}p2
+sudo mkfs.fat -F32 ${LOOP_DEV}p3
+sudo mkfs.ext4 -L archlinuxroot -F ${LOOP_DEV}p4
 
 # mount partitions
-mount ${LOOP_DEV}p4 /mnt || exit 1
-mount --mkdir ${LOOP_DEV}p3 /mnt/boot || exit 1
+echo "Running sudo to mount partitions..."
+sudo mount ${LOOP_DEV}p4 /mnt || exit 1
+sudo mount --mkdir ${LOOP_DEV}p3 /mnt/boot || exit 1
 
 
 ################################################################################
@@ -87,46 +101,49 @@ mount --mkdir ${LOOP_DEV}p3 /mnt/boot || exit 1
 ################################################################################
 
 # bootstrap packages
-#pacstrap -C extra/pacman.conf /mnt archlinux-keyring aria2 bandwhich base base-devel bash bat bc bind btop choose cpio cron curl dash dhcpcd dnsmasq dog dua-cli dust exa fd findutils gcc git git-lfs htop hyperfine inetutils inxi iotop iperf iperf3 iputils kmod less libelf lsb-release lsof make man man-db man-pages mlocate nano neovim networkmanager nload opendoas openssh openssl pacman-contrib perl procs ripgrep rsync rustup skim smartmontools tar tealdeer tmux tre tree unrar unzip vim wget wireguard-tools wol xmlto xz zip zsh zsh-autosuggestions zsh-completions zsh-syntax-highlighting
+#pacstrap -C extra/pacman.conf /mnt archlinux-keyring aria2 bandwhich base base-devel bash bat bc bind btop choose cpio cron curl dhcpcd dnsmasq dog dua-cli dust exa fd findutils gcc git git-lfs htop hyperfine inetutils inxi iotop iperf iperf3 iputils kmod less libelf lsb-release lsof make man man-db man-pages mlocate nano neovim networkmanager nload opendoas openssh openssl pacman-contrib perl procs ripgrep rsync rustup skim smartmontools tar tealdeer tmux tre tree unrar unzip vim wget wireguard-tools wol xmlto xz zip zsh zsh-autosuggestions zsh-completions zsh-syntax-highlighting
 bash scripts/install-packages.sh
 if [ $? -ne 0 ]; then
     sync
-    umount -R /mnt
-    losetup -d $LOOP_DEV
+    echo "Running sudo to clean up mounts and temp files..."
+    sudo umount -R /mnt
+    sudo losetup -d $LOOP_DEV
     rm $IMAGE_NAME
     exit 1
 fi
 sync
 
 # copy the vendor kernel
-mkdir -p /mnt/chroot-data
-cp -v lfs/*.pkg.tar.zst /mnt/chroot-data
-cp -v scripts/kernel-installer.sh /mnt/chroot-data
+sudo mkdir -p /mnt/chroot-data
+sudo cp -v lfs/*.pkg.tar.zst /mnt/chroot-data
+sudo cp -v scripts/kernel-installer.sh /mnt/chroot-data
 sync
 
 # now install the vendor kernel
-arch-chroot /mnt bash /chroot-data/kernel-installer.sh 
+sudo arch-chroot /mnt bash /chroot-data/kernel-installer.sh 
 if [ $? -ne 0 ]; then
     sync
-    umount -R /mnt
-    losetup -d $LOOP_DEV
+    echo "Running sudo to clean up mounts and temp files..."
+    sudo umount -R /mnt
+    sudo losetup -d $LOOP_DEV
     rm $IMAGE_NAME
     exit 1
 fi
 
 # generate fstab
-genfstab -U /mnt >> /mnt/etc/fstab
+sudo genfstab -U /mnt >> /mnt/etc/fstab
 
 # chroot setup
 cp scripts/chroot-setup.sh /mnt/chroot-data/
-arch-chroot /mnt bash /chroot-data/chroot-setup.sh
-rm -rf /mnt/chroot-data
+echo "Running sudo to arch-chroot..."
+sudo arch-chroot /mnt bash /chroot-data/chroot-setup.sh
+sudo rm -rf /mnt/chroot-data
 
 # boot stuff
-cp -r boot/ /mnt/
+sudo cp -r boot/ /mnt/
 
 # remove the zram
-arch-chroot /mnt vim /etc/fstab
+sudo arch-chroot /mnt vim /etc/fstab
 
 
 ################################################################################
@@ -134,8 +151,9 @@ arch-chroot /mnt vim /etc/fstab
 ################################################################################
 
 sync
-umount -R /mnt
-losetup -d $LOOP_DEV
+echo "Running sudo to clean up mounts and temp files..."
+sudo umount -R /mnt
+sudo losetup -d $LOOP_DEV
 
 
 # vim:set ts=4 sts=4 sw=4 et:
