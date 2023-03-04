@@ -1,4 +1,4 @@
-#!/usr/bin/env dash
+#!/usr/bin/env bash
 
 if [ -z "$1" ]; then
     echo "ERROR: please provide the drive name (use 'sda' instead of 'sda1')"

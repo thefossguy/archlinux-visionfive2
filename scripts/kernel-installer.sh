@@ -1,4 +1,4 @@
-#!/usr/bin/env dash
+#!/usr/bin/env bash
 
 # cleanup before installing more pkgs
 rm -f /var/cache/pacman/pkg/*.*
