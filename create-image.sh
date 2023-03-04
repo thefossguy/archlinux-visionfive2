@@ -1,4 +1,4 @@
-#!/usr/bin/env dash
+#!/usr/bin/env bash
 
 export IMAGE_NAME=archlinux-$(date +%Y.%m.%d)-riscv64.img
 export pkg_start="linux-starfive-visionfive2"
@@ -105,7 +105,7 @@ cp -v scripts/kernel-installer.sh /mnt/chroot-data
 sync
 
 # now install the vendor kernel
-arch-chroot /mnt dash /chroot-data/kernel-installer.sh 
+arch-chroot /mnt bash /chroot-data/kernel-installer.sh 
 if [ $? -ne 0 ]; then
     sync
     umount -R /mnt
@@ -119,7 +119,7 @@ genfstab -U /mnt >> /mnt/etc/fstab
 
 # chroot setup
 cp scripts/chroot-setup.sh /mnt/chroot-data/
-arch-chroot /mnt dash /chroot-data/chroot-setup.sh
+arch-chroot /mnt bash /chroot-data/chroot-setup.sh
 rm -rf /mnt/chroot-data
 
 # boot stuff
