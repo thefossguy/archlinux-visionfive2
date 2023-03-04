@@ -18,7 +18,7 @@ echo "en_US.UTF-8 UTF-8" > /etc/locale.gen
 locale-gen
 
 # hostname
-echo "vasudev" > /etc/hostname
+echo "archlinux" > /etc/hostname
 
 # pacman config
 sed -i "s/#Color/Color/" /etc/pacman.conf
