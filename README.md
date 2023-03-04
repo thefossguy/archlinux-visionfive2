@@ -26,7 +26,7 @@ For example, if your drive is called `/dev/sdz`, do this:
 sudo ./post-dd.sh /dev/sdz
 ```
 
-**NOTE: Please use `doas` as an alterntive to `sudo`.
+**NOTE: Please use `doas` as an alterntive to `sudo`.**
 
 ## CHECKSUMS
 
