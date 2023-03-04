@@ -7,8 +7,8 @@ serial conosole (over UART).**
 **Please refer to the releases section and make sure that your board firmware
 matches with what is expected.**
 
-Build your own `.img` file using the `create-image.sh` shell script. Otherwise, just
-`dd` the provided image like so:
+Build your own `.img` file using the `create-image.sh` shell script. Otherwise,
+just `dd` the provided image like so:
 
 ```bash
 sudo dd conv=sync status=progress if=archlinux-*-riscv64.img \
@@ -38,6 +38,20 @@ password: changeme
 username: root
 password: root
 ```
+
+
+## TODO
+
+ - [x] [Switch from `dash` to `bash`](https://github.com/thefossguy/archlinux-visionfive2/commit/d6373144f211f8bef89b777b632edac30c9fde96]
+ - [ ] Add check to see if script is running as root
+ - [ ] Set timezone to UTC
+ - [ ] Use `archlinux` as machine hostname
+ - [ ] Check if all necessary packages are installed, to make use of utilities
+ - [ ] Reduce image size
+ - [ ] Don't set `root`'s password to `root`. As per Ankur's suggestion,
+ `starfive` sounds like a good way to go.
+ - [ ] Disable `root` login over `ssh`
+
 
 ---
 
