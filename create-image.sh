@@ -10,6 +10,12 @@ export UBOOT_PART=lfs/1uboot
 # satisfy pre-requisites before image creation
 ################################################################################
 
+# exit if not run as root
+if [ $EUID -ne 0 ]; then
+    echo "Please run this script as root"
+    exit 1
+fi
+
 # handle kernel
 ./scripts/verify_file_and_checksum.sh "lfs/$pkg_start-$pkg_end" "7dfc44a4b0ea17a6350ac3ead7709040222859b9a54643fd56c5e6e446c45ddf1953d001da89f70153967d7e9ba09954f7d1de5be495a71324633abcaf8bb61b" || exit 1
 ./scripts/verify_file_and_checksum.sh "lfs/$pkg_start-headers-$pkg_end" "3f86f7dff13ea84036b20f46cbf41094779d6f91d698af32b27058dbdd8757cec3c3850c501d43358963be5c8c6e23a7bd57a048401a1bf8d06f612c52566f84" || exit 1
@@ -17,6 +23,7 @@ export UBOOT_PART=lfs/1uboot
 # make sure SPL_PART and UBOOT_PART are present and checksums match
 ./scripts/verify_file_and_checksum.sh "$SPL_PART" "6580149f59f1d0dfb5a6ea2f71f9261b2f0c7078467faa1bcdd1f015239dd98ce0c4b697d70644b01bb4286fea0c3133c3b1836e32d37a40eefd1ac30d36d581" || exit 1
 ./scripts/verify_file_and_checksum.sh "$UBOOT_PART" "8977525a17feb0214db5fe2ad5ff797a6e53ff40e765313f89bdddcc47ab2c81cc633e12d37d1eecfb02da762550d38bd56e0b3ab5eda94a40ecbcbac50d3a96" || exit 1
+
 
 ################################################################################
 # image creation and related setup
@@ -136,6 +143,5 @@ arch-chroot /mnt vim /etc/fstab
 sync
 umount -R /mnt
 losetup -d $LOOP_DEV
-
 
 # vim:set ts=4 sts=4 sw=4 et:
