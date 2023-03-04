@@ -51,6 +51,9 @@ EOF
 sed -i "s/#PermitRootLogin prohibit-password/PermitRootLogin no/g" /etc/ssh/sshd_config || \
     echo "PermitRootLogin no" | tee -a /etc/ssh/sshd_config
 
+# sudoers
+sed -i "s/# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/g" /etc/sudoers
+
 # cleanup
 rm -f /etc/machine-id
 rm -f /var/lib/systemd/random-seed
