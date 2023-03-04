@@ -42,7 +42,7 @@ password: root
 
 ## TODO
 
- - [x] [Switch from `dash` to `bash`](https://github.com/thefossguy/archlinux-visionfive2/commit/d6373144f211f8bef89b777b632edac30c9fde96]
+ - [x] [Switch from `dash` to `bash`](https://github.com/thefossguy/archlinux-visionfive2/commit/d6373144f211f8bef89b777b632edac30c9fde96)
  - [ ] Add check to see if script is running as root
  - [ ] Set timezone to UTC
  - [ ] Enable NTP
