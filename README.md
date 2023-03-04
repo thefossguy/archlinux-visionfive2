@@ -36,7 +36,7 @@ username: riscv
 password: changeme
 ---
 username: root
-password: root
+password: starfive
 ```
 
 

@@ -35,7 +35,7 @@ usermod --password $(echo changeme | openssl passwd -1 -stdin) riscv
 passwd -e riscv
 
 # root passwd
-usermod --password $(echo root | openssl passwd -1 -stdin) root
+usermod --password $(echo starfive | openssl passwd -1 -stdin) root
 
 # enable services
 systemctl enable NetworkManager.service
