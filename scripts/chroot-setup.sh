@@ -47,6 +47,10 @@ cat <<EOF > /etc/doas.conf
 permit nopass keepenv riscv
 EOF
 
+# ssh setup
+sed -i "s/#PermitRootLogin prohibit-password/PermitRootLogin no/g" /etc/ssh/sshd_config || \
+    echo "PermitRootLogin no" | tee -a /etc/ssh/sshd_config
+
 # cleanup
 rm -f /etc/machine-id
 rm -f /var/lib/systemd/random-seed
