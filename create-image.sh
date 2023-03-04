@@ -140,9 +140,6 @@ rm -rf /mnt/chroot-data
 # boot stuff
 cp -r boot/ /mnt/
 
-# remove the zram
-arch-chroot /mnt vim /etc/fstab
-
 
 ################################################################################
 # wrap up
