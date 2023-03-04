@@ -16,6 +16,14 @@ if [ $EUID -ne 0 ]; then
     exit 1
 fi
 
+# check if necessary pkgs are installed
+for PKG in {arch-install-scripts,bash,cloud-guest-utils,coreutils,dosfstools,e2fsprogs,ncurses,parted,perl,sed,shadow,sudo,util-linux}; do
+    IS_INSTALLED=$(pacman -Q | grep $PKG)
+    if [ -z "$IS_INSTALLED" ]; then
+        pacman -S $PKG
+    fi
+done
+
 # handle kernel
 ./scripts/verify_file_and_checksum.sh "lfs/$pkg_start-$pkg_end" "7dfc44a4b0ea17a6350ac3ead7709040222859b9a54643fd56c5e6e446c45ddf1953d001da89f70153967d7e9ba09954f7d1de5be495a71324633abcaf8bb61b" || exit 1
 ./scripts/verify_file_and_checksum.sh "lfs/$pkg_start-headers-$pkg_end" "3f86f7dff13ea84036b20f46cbf41094779d6f91d698af32b27058dbdd8757cec3c3850c501d43358963be5c8c6e23a7bd57a048401a1bf8d06f612c52566f84" || exit 1
