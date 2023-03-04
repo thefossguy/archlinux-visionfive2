@@ -43,9 +43,9 @@ password: starfive
  - [x] [Switch from `dash` to `bash`](https://github.com/thefossguy/archlinux-visionfive2/commit/d6373144f211f8bef89b777b632edac30c9fde96)
  - [x] [Add check to see if script is running as root](https://github.com/thefossguy/archlinux-visionfive2/commit/2c978ffc45cf6ee1f688bccb23d59d386d2314ff)
  - [x] [Set timezone to UTC](https://github.com/thefossguy/archlinux-visionfive2/commit/177921dcfd7279d929459a23c295097ba437c359)
- - [ ] Enable NTP
+ - [x] [Enable NTP](https://github.com/thefossguy/archlinux-visionfive2/commit/0e2fa0e3f8a3c72a3a0ebba50cf675c24856b936)
  - [x] [Use `archlinux` as machine hostname](https://github.com/thefossguy/archlinux-visionfive2/commit/303901a8da75f6c415adcd9a4938f4653956f6e2)
- - [ ] Check if all necessary packages are installed, to make use of utilities
+ - [x] [Check if all necessary packages are installed, to make use of utilities](https://github.com/thefossguy/archlinux-visionfive2/commit/a64acc2df0115774be7404aa3e8f9014e8e04423)
  - [ ] Reduce image size
  - [x] [Don't set `root`'s password to `root`. As per Ankur's suggestion, `starfive` sounds like a good way to go.](https://github.com/thefossguy/archlinux-visionfive2/commit/ca57334e3b5419845197a3c83cde9d017baf3af2)
  - [x] [Disable `root` login over `ssh`](https://github.com/thefossguy/archlinux-visionfive2/commit/616316f926dc7854153bd1126f35e40e29cabdfa)
