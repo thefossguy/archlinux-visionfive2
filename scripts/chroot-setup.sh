@@ -3,6 +3,26 @@
 tput -x clear
 
 ################################################################################
+# install the kernel
+################################################################################
+
+# cleanup before installing more pkgs
+rm -f /var/cache/pacman/pkg/*.*
+
+# install the kernel
+cd /chroot-data/
+pacman --noconfirm -U *.pkg.tar.zst
+if [ $? -eq 0 ]; then
+    rm *.pkg.tar.zst
+    sync
+    exit 0
+else
+    exit 1
+fi
+cd -
+
+
+################################################################################
 # basic chroot setup
 ################################################################################
 
@@ -23,6 +43,7 @@ echo "archlinux" > /etc/hostname
 
 # pacman config
 sed -i "s/#Color/Color/" /etc/pacman.conf
+
 
 ################################################################################
 # user setup
@@ -63,6 +84,6 @@ wget https://github.com/eswincomputing/eswin_6600u/raw/master/firmware/ECR6600U_
 rm -f /etc/machine-id
 rm -f /var/lib/systemd/random-seed
 rm -f /etc/NetworkManager/system-connections/*.nmconnection
-
-
 touch /etc/machine-id
+
+# vim:set ts=4 sts=4 sw=4 et:
