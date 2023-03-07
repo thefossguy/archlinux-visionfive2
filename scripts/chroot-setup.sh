@@ -56,6 +56,9 @@ sed -i "s/#PermitRootLogin prohibit-password/PermitRootLogin no/g" /etc/ssh/sshd
 # sudoers
 sed -i "s/# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/g" /etc/sudoers
 
+# add the add-on USB WiFi dongle's firmware
+wget https://github.com/eswincomputing/eswin_6600u/raw/master/firmware/ECR6600U_transport.bin -O /lib/firmware/ECR6600U_transport.bin
+
 # cleanup
 rm -f /etc/machine-id
 rm -f /var/lib/systemd/random-seed
