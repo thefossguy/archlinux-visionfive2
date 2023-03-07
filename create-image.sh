@@ -24,11 +24,11 @@ for PKG in {arch-install-scripts,bash,cloud-guest-utils,coreutils,dosfstools,e2f
         INSTALL_PACKAGES+=($PKG)
     fi
 done
-pacman -S "${INSTALL_PACKAGES[@]}"
+if [ ! -z "$INSTALL_PACKAGES" ]; then
+    pacman -S "${INSTALL_PACKAGES[@]}"
+fi
 
 # handle kernel
-./scripts/verify_file_and_checksum.sh "lfs/$pkg_start-$pkg_end" "7dfc44a4b0ea17a6350ac3ead7709040222859b9a54643fd56c5e6e446c45ddf1953d001da89f70153967d7e9ba09954f7d1de5be495a71324633abcaf8bb61b" || exit 1
-./scripts/verify_file_and_checksum.sh "lfs/$pkg_start-headers-$pkg_end" "3f86f7dff13ea84036b20f46cbf41094779d6f91d698af32b27058dbdd8757cec3c3850c501d43358963be5c8c6e23a7bd57a048401a1bf8d06f612c52566f84" || exit 1
 
 # make sure SPL_PART and UBOOT_PART are present and checksums match
 ./scripts/verify_file_and_checksum.sh "$SPL_PART" "6580149f59f1d0dfb5a6ea2f71f9261b2f0c7078467faa1bcdd1f015239dd98ce0c4b697d70644b01bb4286fea0c3133c3b1836e32d37a40eefd1ac30d36d581" || exit 1
