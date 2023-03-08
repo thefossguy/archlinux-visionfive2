@@ -41,7 +41,7 @@ fi
 
 # create image
 [ -f "$IMAGE_NAME" ] && rm -v "$IMAGE_NAME"
-truncate -s 2700M "$IMAGE_NAME"
+truncate -s 2300M "$IMAGE_NAME"
 
 # mount image to the loopback interface
 LOOP_DEV=$(losetup -f -P --show "${IMAGE_NAME}")
@@ -97,6 +97,8 @@ mkfs.ext4 -L archlinuxroot -F ${LOOP_DEV}p4
 # mount partitions
 mount ${LOOP_DEV}p4 /mnt || exit 1
 mount --mkdir ${LOOP_DEV}p3 /mnt/boot || exit 1
+mkdir -p /mnt/var/cache/pacman/pkg
+mount --bind /mnt/var/cache/pacman/pkg /var/cache/pacman/pkg || exit 1
 
 
 ################################################################################
@@ -132,6 +134,7 @@ fi
 rm -rf /mnt/chroot-data
 
 # generate fstab
+umount /mnt/var/cache/pacman/pkg
 genfstab -U /mnt >> /mnt/etc/fstab
 
 # boot stuff

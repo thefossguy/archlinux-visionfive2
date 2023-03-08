@@ -6,9 +6,6 @@ tput -x clear
 # install the kernel
 ################################################################################
 
-# cleanup before installing more pkgs
-rm -f /var/cache/pacman/pkg/*.*
-
 # install the kernel
 cd /chroot-data/
 pacman --noconfirm -U *.pkg.tar.zst
