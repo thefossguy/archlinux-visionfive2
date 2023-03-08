@@ -11,7 +11,7 @@ Build your own `.img` file using the `create-image.sh` shell script. Otherwise,
 just `dd` the provided image like so:
 
 ```bash
-sudo dd conv=sync status=progress if=archlinux-*-riscv64.img \
+sudo dd conv=sync status=progress if=IMAGE_NAME \
     of=DEVICE_PATH
 ```
 
