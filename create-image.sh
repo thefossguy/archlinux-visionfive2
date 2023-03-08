@@ -150,8 +150,18 @@ sync
 umount -R /mnt
 losetup -d $LOOP_DEV
 
+# compress
+zstd -9 -z $IMAGE_NAME
+
 tput -x clear
 echo "Image created with name $IMAGE_NAME"
 echo "The image is owned by 'root:root', please chown it ;)"
+
+echo -e '\n# SHA512SUMS' > CHECKSUMS
+sha512sum $IMAGE_NAME "$IMAGE_NAME".zst >> CHECKSUMS
+echo -e '\n# SHA512SUMS' >> CHECKSUMS
+sha256sum $IMAGE_NAME "$IMAGE_NAME".zst >> CHECKSUMS
+echo -e '\n# SHA512SUMS' >> CHECKSUMS
+md5sum $IMAGE_NAME "$IMAGE_NAME".zst >> CHECKSUMS
 
 # vim:set ts=4 sts=4 sw=4 et:
