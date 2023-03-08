@@ -28,14 +28,17 @@ cd -
 
 # time
 hwclock --systohc # the VF2 has a hawdware clock; nice
-ln -sf /usr/share/zoneinfo/UTC /etc/localtime
+[ -z "$CONF_TIMEZONE" ] && export CONF_TIMEZONE=UTC
+ln -sf /usr/share/zoneinfo/${CONF_TIMEZONE} /etc/localtime
 
 # locale
-echo "en_US.UTF-8 UTF-8" > /etc/locale.gen
+[ -z "$CONF_LOCALE" ] && export CONF_LOCALE=en_US
+echo "${CONF_LOCALE}.UTF-8 UTF-8" > /etc/locale.gen
 locale-gen
 
 # hostname
-echo "archlinux-riscv" > /etc/hostname
+[ -z "$CONF_HOSTNAME" ] && export CONF_HOSTNAME=archlinux-riscv
+echo "${CONF_HOSTNAME}" > /etc/hostname
 
 # pacman config
 sed -i "s/#Color/Color/" /etc/pacman.conf
@@ -45,25 +48,25 @@ sed -i "s/#Color/Color/" /etc/pacman.conf
 # user setup
 ################################################################################
 
-# setup the user riscv
-useradd -m -G adm,ftp,games,http,kvm,log,rfkill,sys,systemd-journal,uucp,wheel \
-	-s $(which bash) riscv
+# setup the user
+[ -z "$CONF_USER" ] && export CONF_USER=riscv
+[ -z "$CONF_GROUPS" ] && export CONF_GROUPS=wheel
+useradd -m -G "$CONF_GROUPS" \
+	-s $(which bash) ${CONF_USER}
 
-usermod --password $(echo changeme | openssl passwd -1 -stdin) riscv
-passwd -e riscv
+[ -z "$CONF_USER_PASSWORD" ] && export CONF_USER_PASSWORD=changeme
+usermod --password $(echo "$CONF_USER_PASSWORD" | openssl passwd -1 -stdin) ${CONF_USER}
+passwd -e ${CONF_USER}
 
 # root passwd
-usermod --password $(echo starfive | openssl passwd -1 -stdin) root
+[ -z "$CONF_ROOT_PASSWORD" ] && export CONF_ROOT_PASSWORD=starfive
+usermod --password $(echo "$CONF_ROOT_PASSWORD" | openssl passwd -1 -stdin) root
+passwd -e root
 
 # enable services
 systemctl enable NetworkManager.service
 systemctl enable sshd.service
 systemctl enable systemd-timesyncd.service
-
-# doas setup
-cat <<EOF > /etc/doas.conf
-permit persist keepenv riscv
-EOF
 
 # ssh setup
 sed -i "s/#PermitRootLogin prohibit-password/PermitRootLogin no/g" /etc/ssh/sshd_config || \

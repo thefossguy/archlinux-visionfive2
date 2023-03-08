@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+source image.conf
+if [ $? -ne 0 ]; then
+    echo "ERROR: could not get configuration from image.conf"
+    exit 1
+fi
+
 export IMAGE_NAME=archlinux-UNOFFICIAL-$(date +%Y.%m.%d)-$(uname -m).img
 export KERNEL_PKG="lfs/linux-starfive-visionfive2-5.15.0.arch1-1-riscv64.pkg.tar.zst"
 export KERNEL_HEADER_PKG="lfs/linux-starfive-visionfive2-headers-5.15.0.arch1-1-riscv64.pkg.tar.zst"
