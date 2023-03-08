@@ -15,7 +15,6 @@ pacman --noconfirm -U *.pkg.tar.zst
 if [ $? -eq 0 ]; then
     rm *.pkg.tar.zst
     sync
-    exit 0
 else
     exit 1
 fi
@@ -39,7 +38,7 @@ echo "en_US.UTF-8 UTF-8" > /etc/locale.gen
 locale-gen
 
 # hostname
-echo "archlinux" > /etc/hostname
+echo "archlinux-riscv" > /etc/hostname
 
 # pacman config
 sed -i "s/#Color/Color/" /etc/pacman.conf
@@ -67,7 +66,7 @@ systemctl enable systemd-timesyncd.service
 
 # doas setup
 cat <<EOF > /etc/doas.conf
-permit nopass keepenv riscv
+permit persist keepenv riscv
 EOF
 
 # ssh setup
@@ -75,7 +74,7 @@ sed -i "s/#PermitRootLogin prohibit-password/PermitRootLogin no/g" /etc/ssh/sshd
     echo "PermitRootLogin no" | tee -a /etc/ssh/sshd_config
 
 # sudoers
-sed -i "s/# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) NOPASSWD:ALL/g" /etc/sudoers
+sed -i "s/# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/g" /etc/sudoers
 
 # add the add-on USB WiFi dongle's firmware
 wget https://github.com/eswincomputing/eswin_6600u/raw/master/firmware/ECR6600U_transport.bin -O /lib/firmware/ECR6600U_transport.bin
@@ -85,5 +84,6 @@ rm -f /etc/machine-id
 rm -f /var/lib/systemd/random-seed
 rm -f /etc/NetworkManager/system-connections/*.nmconnection
 touch /etc/machine-id
+sync
 
 # vim:set ts=4 sts=4 sw=4 et:
