@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-export IMAGE_NAME=archlinux-$(date +%Y.%m.%d)-riscv64.img
+export IMAGE_NAME=archlinux-UNOFFICIAL-$(date +%Y.%m.%d)-$(uname -m).img
 export KERNEL_PKG="lfs/linux-starfive-visionfive2-5.15.0.arch1-1-riscv64.pkg.tar.zst"
 export KERNEL_HEADER_PKG="lfs/linux-starfive-visionfive2-headers-5.15.0.arch1-1-riscv64.pkg.tar.zst"
 export SPL_PART=lfs/0spl
