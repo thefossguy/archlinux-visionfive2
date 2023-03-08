@@ -61,7 +61,6 @@ usermod --password $(echo starfive | openssl passwd -1 -stdin) root
 # enable services
 systemctl enable NetworkManager.service
 systemctl enable sshd.service
-systemctl enable dhcpcd.service
 systemctl enable systemd-timesyncd.service
 
 # doas setup
