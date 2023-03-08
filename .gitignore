@@ -1,2 +1,3 @@
 *.img
+*.img.zst
 lfs/*.pkg.tar.zst
