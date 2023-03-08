@@ -98,7 +98,7 @@ mkfs.ext4 -L archlinuxroot -F ${LOOP_DEV}p4
 mount ${LOOP_DEV}p4 /mnt || exit 1
 mount --mkdir ${LOOP_DEV}p3 /mnt/boot || exit 1
 mkdir -p /mnt/var/cache/pacman/pkg
-mount --bind /mnt/var/cache/pacman/pkg /var/cache/pacman/pkg || exit 1
+mount --bind /var/cache/pacman/pkg /mnt/var/cache/pacman/pkg || exit 1
 
 
 ################################################################################
