@@ -18,7 +18,7 @@ fi
 
 # check if necessary pkgs are installed
 INSTALL_PACKAGES=()
-for PKG in {arch-install-scripts,bash,cloud-guest-utils,coreutils,dosfstools,e2fsprogs,ncurses,parted,perl,sed,shadow,sudo,util-linux}; do
+for PKG in {arch-install-scripts,bash,cloud-guest-utils,coreutils,dosfstools,e2fsprogs,ncurses,parted,perl,sed,shadow,sudo,util-linux,wget}; do
     IS_INSTALLED=$(pacman -Q | grep $PKG)
     if [ -z "$IS_INSTALLED" ]; then
         INSTALL_PACKAGES+=($PKG)
