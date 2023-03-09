@@ -4,7 +4,7 @@
 # packages to be installed
 ################################################################################
 
-PKGS_TO_INSTALL=(base networkmanager openssh vim)
+PKGS_TO_INSTALL=(base man-db man-pages networkmanager openssh sudo vim)
 [ -n "$CONF_ADD_PKGS_TO_INSTALL" ] && PKGS_TO_INSTALL+=(${CONF_ADD_PKGS_TO_INSTALL})
 
 ################################################################################
