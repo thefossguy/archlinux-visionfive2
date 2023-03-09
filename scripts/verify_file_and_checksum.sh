@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 LFS_REL_URL="https://github.com/thefossguy/archlinux-visionfive2/raw/master"
-KERN_REL_URL="https://github.com/thefossguy/linux-starfive-visionfive2/releases/download/v2.10.4-1"
+KERN_REL_URL="https://github.com/thefossguy/linux-starfive-visionfive2/releases/download/v2.10.4-3"
 CHECKSUM_OK=1
 
 if [ ! -z $1 ]; then
@@ -15,11 +15,11 @@ if [ ! -z $1 ]; then
         URL="$LFS_REL_URL/$FILE"
     elif [ "$1" = "kernel" ]; then
         FILE=$KERNEL_PKG
-        CHECKSUM="041fbf817671ffdd0d61d756305a738bd11ca6d5246e315d60e5f43578b277ee47e629ea28eb6cfcb175ecb956615fa299daaef1644a261cd88b768eb32b0f29"
+        CHECKSUM="ac98b71ee4e4351fc8bb9258a5d0769f539124e86cad17ff6c0ff40071ac63d7b8954e279ca7c5aefadd01d498cc669e25bf4dd190b388e682357b5c408e90b7"
         URL="$KERN_REL_URL/${FILE#lfs/}"
     elif [ "$1" = "kheaders" ]; then
         FILE=$KERNEL_HEADER_PKG
-        CHECKSUM="1d47524e54c7d3916c8434f1245b7595e20fdd76138e75958e209fedf6d4afd7ee8350bff77a8c4d83f05627080987e639755f331070e98e38d9b2faf4a8fbe0"
+        CHECKSUM="28fe69c4cde4a68e1711e920336ba4c93cf050cbec370bdcd8574522a6d46fadb4459a7930519fcf0c77401865c45c07fe53c7e448bc8db9d62211649baefe28"
         URL="$KERN_REL_URL/${FILE#lfs/}"
     else
         echo "ERROR: invalid parameter"
