@@ -15,11 +15,11 @@ if [ ! -z $1 ]; then
         URL="$LFS_REL_URL/$FILE"
     elif [ "$1" = "kernel" ]; then
         FILE=$KERNEL_PKG
-        CHECKSUM="041fbf817671ffdd0d61d756305a738bd11ca6d5246e315d60e5f43578b277ee47e629ea28eb6cfcb175ecb956615fa299daaef1644a261cd88b768eb32b0f29"
+        CHECKSUM="77b50818fbc9dab7c14604f3fea1b628bfb9b9f637a96aa318579fd72ab2ac8ad4c551d27716aba44ddc0d9c02869af41e7afac623a8b2451c5970bbbb06f49c"
         URL="$KERN_REL_URL/${FILE#lfs/}"
     elif [ "$1" = "kheaders" ]; then
         FILE=$KERNEL_HEADER_PKG
-        CHECKSUM="1d47524e54c7d3916c8434f1245b7595e20fdd76138e75958e209fedf6d4afd7ee8350bff77a8c4d83f05627080987e639755f331070e98e38d9b2faf4a8fbe0"
+        CHECKSUM="cb3fb77831256de7b3d3694133b8ddbdec2572025ef17cd8f7a7897b6c5496dcb89bc2049dc9ebe6363a79a3ef255b654c1131de452ba6498aaea533c1c32ad0"
         URL="$KERN_REL_URL/${FILE#lfs/}"
     else
         echo "ERROR: invalid parameter"

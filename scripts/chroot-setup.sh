@@ -58,10 +58,8 @@ useradd -m -G "$CONF_GROUPS" \
 usermod --password $(echo "$CONF_USER_PASSWORD" | openssl passwd -1 -stdin) ${CONF_USER}
 passwd -e ${CONF_USER}
 
-# root passwd
-[ -z "$CONF_ROOT_PASSWORD" ] && export CONF_ROOT_PASSWORD=starfive
-usermod --password $(echo "$CONF_ROOT_PASSWORD" | openssl passwd -1 -stdin) root
-passwd -e root
+# Lock root so it can't be signed into.
+passwd -l root
 
 # enable services
 systemctl enable NetworkManager.service
