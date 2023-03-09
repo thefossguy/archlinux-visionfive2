@@ -154,7 +154,7 @@ losetup -d $LOOP_DEV
 zstd -9 -z $IMAGE_NAME
 
 # generate checksums
-echo -e '\n# SHA512SUMS' > CHECKSUMS
+echo -e '# SHA512SUMS' > CHECKSUMS
 sha512sum $IMAGE_NAME "$IMAGE_NAME".zst >> CHECKSUMS
 echo -e '\n# SHA512SUMS' >> CHECKSUMS
 sha256sum $IMAGE_NAME "$IMAGE_NAME".zst >> CHECKSUMS
