@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 LFS_REL_URL="https://github.com/thefossguy/archlinux-visionfive2/raw/master"
-KERN_REL_URL="https://github.com/thefossguy/linux-starfive-visionfive2/releases/download/v2.10.4-1"
+KERN_REL_URL="https://github.com/thefossguy/linux-starfive-visionfive2/releases/download/v2.10.4-3"
 CHECKSUM_OK=1
 
 if [ ! -z $1 ]; then

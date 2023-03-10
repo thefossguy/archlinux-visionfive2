@@ -11,6 +11,7 @@ export KERNEL_PKG="lfs/linux-starfive-visionfive2-5.15.0.arch1-2-riscv64.pkg.tar
 export KERNEL_HEADER_PKG="lfs/linux-starfive-visionfive2-headers-5.15.0.arch1-2-riscv64.pkg.tar.zst"
 export SPL_PART=lfs/0spl
 export UBOOT_PART=lfs/1uboot
+R_USER=$(who am i | awk '{print $1}')
 
 ################################################################################
 # satisfy pre-requisites before image creation
@@ -160,15 +161,16 @@ losetup -d $LOOP_DEV
 [ -f "${IMAGE_NAME}.zst" ] && rm "${IMAGE_NAME}.zst"
 zstd -9 -z $IMAGE_NAME
 
-tput -x clear
-echo "Image created with name $IMAGE_NAME"
-echo "The image is owned by 'root:root', please chown it ;)"
-
-echo -e '\n# SHA512SUMS' > CHECKSUMS
+# generate checksums
+echo -e '# SHA512SUMS' > CHECKSUMS
 sha512sum $IMAGE_NAME "$IMAGE_NAME".zst >> CHECKSUMS
 echo -e '\n# SHA512SUMS' >> CHECKSUMS
 sha256sum $IMAGE_NAME "$IMAGE_NAME".zst >> CHECKSUMS
 echo -e '\n# SHA512SUMS' >> CHECKSUMS
 md5sum $IMAGE_NAME "$IMAGE_NAME".zst >> CHECKSUMS
+
+# change final permissions
+chown $R_USER:$R_USER -v $IMAGE_NAME "$IMAGE_NAME".zst CHECKSUMS
+
 
 # vim:set ts=4 sts=4 sw=4 et:
