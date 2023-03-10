@@ -51,11 +51,10 @@ sed -i "s/#Color/Color/" /etc/pacman.conf
 # setup the user
 [ -z "$CONF_USER" ] && export CONF_USER=riscv
 [ -z "$CONF_GROUPS" ] && export CONF_GROUPS=wheel
-useradd -m -G "$CONF_GROUPS" \
-	-s $(command -v bash) ${CONF_USER}
+useradd -m -G "$CONF_GROUPS" ${CONF_USER}
 
 [ -z "$CONF_USER_PASSWORD" ] && export CONF_USER_PASSWORD=changeme
-usermod --password $(echo "$CONF_USER_PASSWORD" | openssl passwd -1 -stdin) ${CONF_USER}
+echo -e "${CONF_USER_PASSWORD}\n${CONF_USER_PASSWORD}" | passwd ${CONF_USER}
 passwd -e ${CONF_USER}
 
 # Lock root so it can't be signed into.

@@ -157,6 +157,7 @@ umount -R /mnt
 losetup -d $LOOP_DEV
 
 # compress
+[ -f "${IMAGE_NAME}.zst" ] && rm "${IMAGE_NAME}.zst"
 zstd -9 -z $IMAGE_NAME
 
 tput -x clear
