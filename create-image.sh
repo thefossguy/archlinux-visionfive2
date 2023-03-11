@@ -3,7 +3,7 @@
 CONFIG="image.conf"
 
 show_usage() {
-    echo "Create Arch Linux image for the Risc-V StarFive VisionFive 2 single board computer\n
+    echo "Create Arch Linux image for the RISC-V StarFive VisionFive 2 single board computer\n
 
 USAGE:
     create-image.sh [ -h | CONFIG_FILE]
