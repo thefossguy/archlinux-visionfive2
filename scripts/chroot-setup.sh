@@ -28,14 +28,14 @@ cd -
 
 # time
 hwclock --systohc # the VF2 has a hawdware clock; nice
-ln -sf /usr/share/zoneinfo/UTC /etc/localtime
+ln -sf /usr/share/zoneinfo/${CONF_TIMEZONE} /etc/localtime
 
 # locale
-echo "en_US.UTF-8 UTF-8" > /etc/locale.gen
+echo "${CONF_LOCALE}.UTF-8 UTF-8" > /etc/locale.gen
 locale-gen
 
 # hostname
-echo "archlinux-riscv" > /etc/hostname
+echo "${CONF_HOSTNAME}" > /etc/hostname
 
 # pacman config
 sed -i "s/#Color/Color/" /etc/pacman.conf
@@ -45,25 +45,19 @@ sed -i "s/#Color/Color/" /etc/pacman.conf
 # user setup
 ################################################################################
 
-# setup the user riscv
-useradd -m -G adm,ftp,games,http,kvm,log,rfkill,sys,systemd-journal,uucp,wheel \
-	-s $(which bash) riscv
+# setup the user
+useradd -m -G "$CONF_GROUPS" ${CONF_USER}
 
-usermod --password $(echo changeme | openssl passwd -1 -stdin) riscv
-passwd -e riscv
+echo -e "${CONF_USER_PASSWORD}\n${CONF_USER_PASSWORD}" | passwd ${CONF_USER}
+passwd -e ${CONF_USER}
 
-# root passwd
-usermod --password $(echo starfive | openssl passwd -1 -stdin) root
+# Lock root so it can't be signed into.
+passwd -l root
 
 # enable services
 systemctl enable NetworkManager.service
 systemctl enable sshd.service
 systemctl enable systemd-timesyncd.service
-
-# doas setup
-cat <<EOF > /etc/doas.conf
-permit persist keepenv riscv
-EOF
 
 # ssh setup
 sed -i "s/#PermitRootLogin prohibit-password/PermitRootLogin no/g" /etc/ssh/sshd_config || \
@@ -73,7 +67,8 @@ sed -i "s/#PermitRootLogin prohibit-password/PermitRootLogin no/g" /etc/ssh/sshd
 sed -i "s/# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/g" /etc/sudoers
 
 # add the add-on USB WiFi dongle's firmware
-wget https://github.com/eswincomputing/eswin_6600u/raw/master/firmware/ECR6600U_transport.bin -O /lib/firmware/ECR6600U_transport.bin
+mkdir -p /lib/firmware
+curl -LJs --output /lib/firmware/ECR6600U_transport.bin https://github.com/eswincomputing/eswin_6600u/raw/master/firmware/ECR6600U_transport.bin || exit 1
 
 # cleanup
 rm -f /etc/machine-id
