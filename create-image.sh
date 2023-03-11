@@ -16,6 +16,11 @@ OPTIONS:
 }
 
 
+################################################################################
+# satisfy pre-requisites before image creation
+################################################################################
+
+# Parse CLI arguments
 if [ $# -ne 0 ]; then
     [ $# -gt 1 ] && (>&2 echo "error: too many arguments" && show_usage && exit 1)
     [ $1 == "-h" ] && (show_usage && exit 0)
@@ -27,17 +32,14 @@ if [ $# -ne 0 ]; then
     fi
 fi
 
+# Read and validate configuration
 source "$CONFIG"
-[ $? -ne 0 ] && (>&2 echo "ERROR: could not read configuration from '$CONF'" && exit 1)
+[ $? -ne 0 ] && { >&2 echo "ERROR: could not read configuration from '$CONF'"; exit 1; }
+scripts/validate_config.sh || { >&2 echo "ERROR: invalid configuration"; exit 1; }
 
-
-R_USER=$(who am i | awk '{print $1}')
-
-################################################################################
-# satisfy pre-requisites before image creation
-################################################################################
 
 # exit if not run as root
+R_USER=$(who am i | awk '{print $1}')
 if [ $EUID -ne 0 ]; then
     echo "Please run this script as root"
     exit 1

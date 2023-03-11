@@ -28,16 +28,13 @@ cd -
 
 # time
 hwclock --systohc # the VF2 has a hawdware clock; nice
-[ -z "$CONF_TIMEZONE" ] && export CONF_TIMEZONE=UTC
 ln -sf /usr/share/zoneinfo/${CONF_TIMEZONE} /etc/localtime
 
 # locale
-[ -z "$CONF_LOCALE" ] && export CONF_LOCALE=en_US
 echo "${CONF_LOCALE}.UTF-8 UTF-8" > /etc/locale.gen
 locale-gen
 
 # hostname
-[ -z "$CONF_HOSTNAME" ] && export CONF_HOSTNAME=archlinux-riscv
 echo "${CONF_HOSTNAME}" > /etc/hostname
 
 # pacman config
@@ -49,11 +46,8 @@ sed -i "s/#Color/Color/" /etc/pacman.conf
 ################################################################################
 
 # setup the user
-[ -z "$CONF_USER" ] && export CONF_USER=riscv
-[ -z "$CONF_GROUPS" ] && export CONF_GROUPS=wheel
 useradd -m -G "$CONF_GROUPS" ${CONF_USER}
 
-[ -z "$CONF_USER_PASSWORD" ] && export CONF_USER_PASSWORD=changeme
 echo -e "${CONF_USER_PASSWORD}\n${CONF_USER_PASSWORD}" | passwd ${CONF_USER}
 passwd -e ${CONF_USER}
 
