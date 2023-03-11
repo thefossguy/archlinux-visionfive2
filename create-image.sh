@@ -6,11 +6,6 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-export IMAGE_NAME=archlinux-UNOFFICIAL-$(date +%Y.%m.%d)-$(uname -m).img
-export KERNEL_PKG="lfs/linux-starfive-visionfive2-5.15.0.arch1-2-riscv64.pkg.tar.zst"
-export KERNEL_HEADER_PKG="lfs/linux-starfive-visionfive2-headers-5.15.0.arch1-2-riscv64.pkg.tar.zst"
-export SPL_PART=lfs/0spl
-export UBOOT_PART=lfs/1uboot
 R_USER=$(who am i | awk '{print $1}')
 
 ################################################################################
@@ -36,10 +31,10 @@ if [ ! -z "$INSTALL_PACKAGES" ]; then
 fi
 
 # make sure necessary files are present
-./scripts/verify_file_and_checksum.sh "spl"
-./scripts/verify_file_and_checksum.sh "uboot"
-./scripts/verify_file_and_checksum.sh "kernel"
-./scripts/verify_file_and_checksum.sh "kheaders"
+./scripts/verify_file_and_checksum.sh "spl" || exit 1
+./scripts/verify_file_and_checksum.sh "uboot" || exit 1
+./scripts/verify_file_and_checksum.sh "kernel" || exit 1
+./scripts/verify_file_and_checksum.sh "kheaders" || exit 1
 
 
 ################################################################################
