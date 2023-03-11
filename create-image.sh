@@ -1,10 +1,35 @@
 #!/usr/bin/env bash
 
-source image.conf
-if [ $? -ne 0 ]; then
-    echo "ERROR: could not get configuration from image.conf"
-    exit 1
+CONFIG="image.conf"
+
+show_usage() {
+    echo "Create Arch Linux image for the Risc-V StarFive VisionFive 2 single board computer\n
+
+USAGE:
+    create-image.sh [ -h | CONFIG_FILE]
+
+ARGS:
+    <FILE>    Configuration file
+
+OPTIONS:
+    -h, --help        Print this help message."
+}
+
+
+if [ $# -ne 0 ]; then
+    [ $# -gt 1 ] && (>&2 echo "error: too many arguments" && show_usage && exit 1)
+    [ $1 == "-h" ] && (show_usage && exit 0)
+    [ $1 == "--help" ] && (show_usage && exit 0)
+    if [ -f "$1" ]; then
+        CONFIG=$1
+    else
+        >&2 echo "error: config file '$1' not found" && exit 1
+    fi
 fi
+
+source "$CONFIG"
+[ $? -ne 0 ] && (>&2 echo "ERROR: could not read configuration from '$CONF'" && exit 1)
+
 
 R_USER=$(who am i | awk '{print $1}')
 
