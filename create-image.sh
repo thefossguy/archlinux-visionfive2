@@ -1,17 +1,45 @@
 #!/usr/bin/env bash
 
-export IMAGE_NAME=archlinux-UNOFFICIAL-$(date +%Y.%m.%d)-$(uname -m).img
-export KERNEL_PKG="lfs/linux-starfive-visionfive2-5.15.0.arch1-2-riscv64.pkg.tar.zst"
-export KERNEL_HEADER_PKG="lfs/linux-starfive-visionfive2-headers-5.15.0.arch1-2-riscv64.pkg.tar.zst"
-export SPL_PART=lfs/0spl
-export UBOOT_PART=lfs/1uboot
-R_USER=$(who am i | awk '{print $1}')
+CONFIG="image.conf"
+
+show_usage() {
+    echo "Create Arch Linux image for the RISC-V StarFive VisionFive 2 single board computer\n
+
+USAGE:
+    create-image.sh [ -h | CONFIG_FILE]
+
+ARGS:
+    <FILE>    Configuration file
+
+OPTIONS:
+    -h, --help        Print this help message."
+}
+
 
 ################################################################################
 # satisfy pre-requisites before image creation
 ################################################################################
 
+# Parse CLI arguments
+if [ $# -ne 0 ]; then
+    [ $# -gt 1 ] && (>&2 echo "error: too many arguments" && show_usage && exit 1)
+    [ $1 == "-h" ] && (show_usage && exit 0)
+    [ $1 == "--help" ] && (show_usage && exit 0)
+    if [ -f "$1" ]; then
+        CONFIG=$1
+    else
+        >&2 echo "error: config file '$1' not found" && exit 1
+    fi
+fi
+
+# Read and validate configuration
+source "$CONFIG"
+[ $? -ne 0 ] && { >&2 echo "ERROR: could not read configuration from '$CONF'"; exit 1; }
+scripts/validate_config.sh || { >&2 echo "ERROR: invalid configuration"; exit 1; }
+
+
 # exit if not run as root
+R_USER=$(who am i | awk '{print $1}')
 if [ $EUID -ne 0 ]; then
     echo "Please run this script as root"
     exit 1
@@ -30,10 +58,10 @@ if [ ! -z "$INSTALL_PACKAGES" ]; then
 fi
 
 # make sure necessary files are present
-./scripts/verify_file_and_checksum.sh "spl"
-./scripts/verify_file_and_checksum.sh "uboot"
-./scripts/verify_file_and_checksum.sh "kernel"
-./scripts/verify_file_and_checksum.sh "kheaders"
+./scripts/verify_file_and_checksum.sh "spl" || exit 1
+./scripts/verify_file_and_checksum.sh "uboot" || exit 1
+./scripts/verify_file_and_checksum.sh "kernel" || exit 1
+./scripts/verify_file_and_checksum.sh "kheaders" || exit 1
 
 
 ################################################################################
@@ -152,6 +180,7 @@ umount -R /mnt
 losetup -d $LOOP_DEV
 
 # compress
+[ -f "${IMAGE_NAME}.zst" ] && rm "${IMAGE_NAME}.zst"
 zstd -9 -z $IMAGE_NAME
 
 # generate checksums
