@@ -1,4 +1,12 @@
-# README
+# Arch Linux riscv64 image builder
+
+Build your own custom riscv64 Arch linux image. Whilst this image aims to be
+minimal, the configuration is customisable allowing you to tailor it to your
+needs.
+
+The configuration here targets the StarFive VisionFive 2 SBC however with a
+different kernel, firmware and u-boot, you could potentially support
+other devices.
 
 **This is a very minimal image that may not even display anything over HDMI.
 This image is used for "server-like" applications where you already have a
@@ -7,9 +15,16 @@ serial conosole (over UART).**
 **Please refer to the releases section and make sure that your board firmware
 matches with what is expected.**
 
-Build your own `.img` file using the `create-image.sh` shell script. Otherwise,
-just `dd` the provided image like so:
+## Instructions
+Build your own `.img` file using the `create-image.sh` shell script. `sudo` is
+necessary as the creation of the image requires mounting filesystems and
+`chroot`.
+```bash
+sudo ./create-image.sh
+```
 
+Thereafter,
+just `dd` the provided image like so:
 ```bash
 sudo dd conv=sync status=progress if=IMAGE_NAME \
     of=DEVICE_PATH
@@ -25,38 +40,52 @@ For example, if your drive is called `/dev/sdz`, do this:
 ```bash
 sudo ./post-dd.sh /dev/sdz
 ```
-
-
-## User accounts info:
-
+## User accounts
 ```
 username: riscv
 password: changeme
----
-username: root
-password: starfive
 ```
+The default username is `riscv` and specified in `image.conf` as `CONF_USER`
+The default password is `changeme` and also specific in `image.conf` as
+`CONF_PASSWORD`. Upon first login, you'll be prompted to change this password.
 
+### Root access
+The `root` account is disabled as a security measure. To elevate to `root`,
+you need to use `sudo`
 
-## TODO
+## Out of the box setup
+The image is configured to setup networking via ethernet and the ssh server is
+started on boot. This should provide headless access via ssh out of the box.
+The default machine name is `archlinux-riscv` but this can be customised via
+`image.conf`.
 
- - [x] [Switch from `dash` to `bash`](https://github.com/thefossguy/archlinux-visionfive2/commit/d6373144f211f8bef89b777b632edac30c9fde96)
- - [x] [Add check to see if script is running as root](https://github.com/thefossguy/archlinux-visionfive2/commit/2c978ffc45cf6ee1f688bccb23d59d386d2314ff)
- - [x] [Set timezone to UTC](https://github.com/thefossguy/archlinux-visionfive2/commit/177921dcfd7279d929459a23c295097ba437c359)
- - [x] [Enable NTP](https://github.com/thefossguy/archlinux-visionfive2/commit/0e2fa0e3f8a3c72a3a0ebba50cf675c24856b936)
- - [x] [Use `archlinux` as machine hostname](https://github.com/thefossguy/archlinux-visionfive2/commit/303901a8da75f6c415adcd9a4938f4653956f6e2)
- - [x] [Check if all necessary packages are installed, to make use of utilities](https://github.com/thefossguy/archlinux-visionfive2/commit/a64acc2df0115774be7404aa3e8f9014e8e04423)
- - [ ] Reduce image size
- - [x] [Don't set `root`'s password to `root`. As per Ankur's suggestion, `starfive` sounds like a good way to go.](https://github.com/thefossguy/archlinux-visionfive2/commit/ca57334e3b5419845197a3c83cde9d017baf3af2)
- - [x] [Disable `root` login over `ssh`](https://github.com/thefossguy/archlinux-visionfive2/commit/616316f926dc7854153bd1126f35e40e29cabdfa)
- - [x] [Allow user to use `sudo` and not strictly use `doas`](https://github.com/thefossguy/archlinux-visionfive2/commit/292283f0e7bff4e105ed1c9f776ef71d37f4410c)
+## Custom configuration
+The default configuration for the image is stored in `image.conf`. The
+`create-image.sh` script accepts an argument allowing you to specify your
+own config. If a config file is not provided, the script will default to
+`image.conf`. To use your own config, run:
+```bash
+sudo ./create-image.sh [<CONFIG>]
+```
+### Configuration parameters
+| Parameter                     | Description                                         |
+| ----------------------        | --------------------------------------------------- |
+| `CONF_TIMEZONE`               | Timezone.                                           |
+| `CONF_LOCALE`                 | Locale                                              |
+| `CONF_HOSTNAME`               | Name of machine on the network.                     |
+| `CONF_USER`                   | Username of sudo-capable user.                      |
+| `CONF_USER_PASSWORD`          | Initial password for user. Forced change on login.  |
+| `CONF_GROUPS`                 | Groups that the user is a part of. `wheel` for sudo |
+| `CONF_PKGS_TO_INSTALL`        | Installed pacakges within image.                    |
+| `LFS_REL_URL`                 | Base location for SPL (firmware) and U-Boot files.  |
+| `KERN_REL_URL`                | Where to get kernel packages, if not in `lfs` dir.  |
+| `SPL_PART`                    | SPL firmware filename. Look in `lfs` dir first.     |
+| `SPL_PART_SHA512SUM`          | SPL sha512 checksum.                                |
+| `UBOOT_PART`                  | U-Boot filename. Look in `lfs` dir first.           |
+| `UBOOT_PART_SHA512SUM`        | U-Boot sha512 checksum.                             |
+| `KERNEL_PKG`                  | Kernel package filename. Look in `lfs` dir first.   |
+| `KERNEL_PKG_SHA512SUM`        | Kernel package sha512 checksum.                     |
+| `KERNEL_HEADER_PKG`           | Kernel headers package. Look in `lfs` dir first.    |
+| `KERNEL_HEADER_PKG_SHA512SUM` | Kernel headers package sha512 checksum.             |
+| `IMAGE_NAME`                  | Filename of image to be created.                    |
 
-
----
-
-If you wish to modify any aspect of this image, everything except for the image
-creation is similar to a typical Arch Linux installation.
-
-To modify the user that is created, search and replace `riscv` with your user's
-username in the `chroot-setup.sh` file. To change the password, search and
-replace the string `changeme` with whatever you want.
