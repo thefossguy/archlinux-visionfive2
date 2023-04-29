@@ -2,15 +2,7 @@
 
 
 if [ ! -z $1 ]; then
-    if [ "$1" = "spl" ]; then
-        FILE=$SPL_PART
-        CHECKSUM=$SPL_PART_SHA512SUM
-        URL="$LFS_REL_URL/$FILE"
-    elif [ "$1" = "uboot" ]; then
-        FILE=$UBOOT_PART
-        CHECKSUM=$UBOOT_PART_SHA512SUM
-        URL="$LFS_REL_URL/$FILE"
-    elif [ "$1" = "kernel" ]; then
+    if [ "$1" = "kernel" ]; then
         FILE=$KERNEL_PKG
         CHECKSUM=$KERNEL_PKG_SHA512SUM
         URL="$KERN_REL_URL/${FILE#lfs/}"

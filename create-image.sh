@@ -58,8 +58,6 @@ if [ ! -z "$INSTALL_PACKAGES" ]; then
 fi
 
 # make sure necessary files are present
-./scripts/verify_file_and_checksum.sh "spl" || exit 1
-./scripts/verify_file_and_checksum.sh "uboot" || exit 1
 ./scripts/verify_file_and_checksum.sh "kernel" || exit 1
 ./scripts/verify_file_and_checksum.sh "kheaders" || exit 1
 
@@ -80,52 +78,36 @@ cat << EOF | fdisk $LOOP_DEV
 g
 n
 1
-4096
-8191
-n
-2
-8192
-16383
-n
-3
-16384
+
 +512M
 n
-4
+2
 
 
 t
 1
-198
+1
 t
 2
-197
-t
-3
-1
-t
-4
 20
 w
 EOF
 sync
 
 parted --script $LOOP_DEV \
-    set 3 boot on \
-    set 3 esp on \
-    set 4 legacy_boot on
+    set 1 boot on \
+    set 1 esp on \
+    set 2 legacy_boot on
 sync
 
 
 # format partitions
-dd status=progress conv=sync if="$SPL_PART" of=${LOOP_DEV}p1
-dd status=progress conv=sync if="$UBOOT_PART" of=${LOOP_DEV}p2
-mkfs.fat -F32 ${LOOP_DEV}p3
-mkfs.ext4 -L archlinuxroot -F ${LOOP_DEV}p4
+mkfs.fat -F32 ${LOOP_DEV}p1
+mkfs.ext4 -L archlinuxroot -F ${LOOP_DEV}p2
 
 # mount partitions
-mount ${LOOP_DEV}p4 /mnt || exit 1
-mount --mkdir ${LOOP_DEV}p3 /mnt/boot || exit 1
+mount ${LOOP_DEV}p2 /mnt || exit 1
+mount --mkdir ${LOOP_DEV}p1 /mnt/boot || exit 1
 mkdir -p /mnt/var/cache/pacman/pkg
 mount --bind /var/cache/pacman/pkg /mnt/var/cache/pacman/pkg || exit 1
 

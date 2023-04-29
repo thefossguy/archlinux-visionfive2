@@ -40,6 +40,44 @@ For example, if your drive is called `/dev/sdz`, do this:
 ```bash
 sudo ./post-dd.sh /dev/sdz
 ```
+
+**You need to change a few environment variables in uboot.**
+As the board boots up, you will soon be greeted with the following
+message:
+
+```
+Hit any key to stop autoboot:
+```
+
+**Immediately press any key to stop autoboot! You only have 2 seconds!**
+Once you are in the uboot shell, run the following commands:
+
+```
+setenv boot_targets 'mmc0 mmc1 dhcp'
+setenv bootcmd 'run load_distro_uenv; run distro_bootcmd'
+setenv bootpart '0:1'
+setenv fatbootpart '0:1'
+setenv fdt_addr_r '0x88000000'
+setenv fdtfile 'starfive/jh7110-starfive-visionfive-2-v1.3b.dtb'
+setenv kernel_addr_r '0x84000000'
+setenv kernel_comp_addr_r '0x90000000'
+setenv kernel_comp_size '0x10000000'
+setenv load_distro_uenv 'fatload mmc ${devnum}:1 ${distroloadaddr} /${bootenv}; setenv fatbootpart ${devnum}:1; env import ${distroloadaddr} 200;'
+setenv mmcpart '1'
+setenv ramdisk_addr_r '0x88300000'
+setenv scriptaddr '0x88100000'
+```
+
+If your board variant is 1.2A, then you will need to run the following command
+as well:
+
+```
+setenv fdtfile 'starfive/jh7110-starfive-visionfive-2-v1.2a.dtb'
+```
+
+Finally, run the `saveenv` command and then reset the board using the `reset` command.
+If the board doesn't boot back up, manually reset its power.
+
 ## User accounts
 ```
 username: riscv
@@ -77,12 +115,7 @@ sudo ./create-image.sh [<CONFIG>]
 | `CONF_USER_PASSWORD`          | Initial password for user. Forced change on login.  |
 | `CONF_GROUPS`                 | Groups that the user is a part of. `wheel` for sudo |
 | `CONF_PKGS_TO_INSTALL`        | Installed pacakges within image.                    |
-| `LFS_REL_URL`                 | Base location for SPL (firmware) and U-Boot files.  |
 | `KERN_REL_URL`                | Where to get kernel packages, if not in `lfs` dir.  |
-| `SPL_PART`                    | SPL firmware filename. Look in `lfs` dir first.     |
-| `SPL_PART_SHA512SUM`          | SPL sha512 checksum.                                |
-| `UBOOT_PART`                  | U-Boot filename. Look in `lfs` dir first.           |
-| `UBOOT_PART_SHA512SUM`        | U-Boot sha512 checksum.                             |
 | `KERNEL_PKG`                  | Kernel package filename. Look in `lfs` dir first.   |
 | `KERNEL_PKG_SHA512SUM`        | Kernel package sha512 checksum.                     |
 | `KERNEL_HEADER_PKG`           | Kernel headers package. Look in `lfs` dir first.    |

@@ -18,12 +18,7 @@ checkvar CONF_USER || exit $?
 checkvar CONF_USER_PASSWORD || exit $?
 checkvar CONF_GROUPS || exit $?
 checkvar CONF_PKGS_TO_INSTALL || exit $?
-checkvar LFS_REL_URL || exit $?
 checkvar KERN_REL_URL || exit $?
-checkvar SPL_PART || exit $?
-checkvar SPL_PART_SHA512SUM || exit $?
-checkvar UBOOT_PART || exit $?
-checkvar UBOOT_PART_SHA512SUM || exit $?
 checkvar KERNEL_PKG || exit $?
 checkvar KERNEL_PKG_SHA512SUM || exit $?
 checkvar KERNEL_HEADER_PKG || exit $?
