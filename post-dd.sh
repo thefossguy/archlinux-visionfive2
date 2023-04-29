@@ -5,9 +5,9 @@ if [ -z "$1" ]; then
     exit 1
 fi
 
-growpart "$1" 4 || exit 1
-e2fsck -y -f "$1"4 || exit 1
-resize2fs "$1"4 || exit 1
+growpart "$1" 2 || exit 1
+e2fsck -y -f "$1"2 || exit 1
+resize2fs "$1"2 || exit 1
 
 sync
 
