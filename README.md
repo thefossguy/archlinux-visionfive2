@@ -58,7 +58,7 @@ setenv bootcmd 'run load_distro_uenv; run distro_bootcmd'
 setenv bootpart '0:1'
 setenv fatbootpart '0:1'
 setenv fdt_addr_r '0x88000000'
-setenv fdtfile 'starfive/jh7110-starfive-visionfive-2-v1.3b.dtb'
+setenv fdtfile 'starfive/jh7110-visionfive-v2.dtb'
 setenv kernel_addr_r '0x84000000'
 setenv kernel_comp_addr_r '0x90000000'
 setenv kernel_comp_size '0x10000000'
@@ -68,12 +68,6 @@ setenv ramdisk_addr_r '0x88300000'
 setenv scriptaddr '0x88100000'
 ```
 
-If your board variant is 1.2A, then you will need to run the following command
-as well:
-
-```
-setenv fdtfile 'starfive/jh7110-starfive-visionfive-2-v1.2a.dtb'
-```
 
 Finally, run the `saveenv` command and then reset the board using the `reset` command.
 If the board doesn't boot back up, manually reset its power.
