@@ -70,7 +70,7 @@ fi
 
 # create image
 [ -f "$IMAGE_NAME" ] && rm -v "$IMAGE_NAME"
-truncate -s 2300M "$IMAGE_NAME"
+truncate -s 2400M "$IMAGE_NAME"
 
 # mount image to the loopback interface
 LOOP_DEV=$(losetup -f -P --show "${IMAGE_NAME}")
