@@ -26,7 +26,8 @@ sudo ./create-image.sh
 Thereafter,
 just `dd` the provided image like so:
 ```bash
-sudo dd conv=sync status=progress if=IMAGE_NAME \
+sudo dd conv=sync status=progress bs=4M \
+    if=IMAGE_NAME \
     of=DEVICE_PATH
 ```
 
