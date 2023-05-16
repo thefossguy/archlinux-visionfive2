@@ -45,6 +45,12 @@ if [ $EUID -ne 0 ]; then
     exit 1
 fi
 
+# exit if non-riscv march is detected
+if [ $(uname -m) != "riscv64" ]; then
+    echo "This script is intended to be run natively on RISC-V hardware. Not on $(uname -m)."
+    exit 1
+fi
+
 # check if necessary pkgs are installed
 INSTALL_PACKAGES=()
 for PKG in {arch-install-scripts,bash,cloud-guest-utils,coreutils,dosfstools,e2fsprogs,ncurses,parted,perl,sed,shadow,sudo,util-linux,wget}; do
