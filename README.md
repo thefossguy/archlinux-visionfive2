@@ -7,5 +7,5 @@ Since there is no need of the vendor kernel to boot on the VisionFive 2, an imag
 2. Mount it to loopback.
 3. Partition it.
 4. Mount loopback devices to `/mnt/{,boot/{,efi}}`.
-5. <standard Arch Linux installation procedure from here>
+5. Standard Arch Linux installation procedure from here.
 6. Profit
